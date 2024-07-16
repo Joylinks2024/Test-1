@@ -26,6 +26,12 @@ class Time_Edit_Serializer(ModelSerializer):
         model = User
         fields = ['started_time', 'finished_time']
 
+
+class Time_Edit_Finish_Serializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['finished_time']
+
 # class Sertificate_Serializer(ModelSerializer):
 #     class Meta:
 #         model = Certificate

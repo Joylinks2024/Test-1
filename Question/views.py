@@ -11,7 +11,8 @@ from rest_framework.response import Response
 # from Users.settings import BASE_DIR
 from .models import User
 # from .models import Certificate
-from .serializers import User_Serializer, Sertifikate_Serializer, Time_Edit_Serializer, Sertifikate_ID_Serializer
+from .serializers import User_Serializer, Sertifikate_Serializer, Time_Edit_Serializer, Sertifikate_ID_Serializer, \
+    Time_Edit_Finish_Serializer
 
 colour_light_blue = 255, 255, 0
 
@@ -91,8 +92,11 @@ def Restart_User(request):
             user = get_object_or_404(User, user_id=request.data['user_id'])
         except Exception as e:
             return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        serializer = Time_Edit_Serializer(user, data={"started_time": request.data['started_time'],
-                                                      "finished_time": request.data['finished_time']})
+        if request.data['started_time'] is None and request.data['finished_time'] is not None:
+            serializer = Time_Edit_Finish_Serializer(user, data={"finished_time": request.data['finished_time']})
+        else:
+            serializer = Time_Edit_Serializer(user, data={"started_time": request.data['started_time'],
+                                                          "finished_time": request.data['finished_time']})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

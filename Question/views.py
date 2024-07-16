@@ -92,13 +92,16 @@ def Restart_User(request):
             user = get_object_or_404(User, user_id=request.data['user_id'])
         except Exception as e:
             return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        if request.data['started_time'] in [None, "none", "None"] and request.data['finished_time'] not in [None,
-                                                                                                            "none",
-                                                                                                            "None"]:
-            serializer = Time_Edit_Finish_Serializer(user, data={"finished_time": request.data['finished_time']})
-        else:
-            serializer = Time_Edit_Serializer(user, data={"started_time": request.data['started_time'],
-                                                          "finished_time": request.data['finished_time']})
+        try:
+            if request.data['started_time'] in [None, "none", "None"] and request.data['finished_time'] not in [None,
+                                                                                                                "none",
+                                                                                                                "None"]:
+                serializer = Time_Edit_Finish_Serializer(user, data={"finished_time": request.data['finished_time']})
+            else:
+                serializer = Time_Edit_Serializer(user, data={"started_time": request.data['started_time'],
+                                                              "finished_time": request.data['finished_time']})
+        except Exception as e:
+            return Response(data={'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

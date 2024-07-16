@@ -25,9 +25,10 @@ def Create_User(request):
 
 
 def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tamurodov"):
-    template_path = f'{BASE_DIR}\\media\\template_certificate\\Sertificat_2.png'
+    import os
+    file_path = os.path.join(BASE_DIR, 'media/template_certificate/Sertificat_2.png')
     save_path = f"{BASE_DIR}\\media\\certificates"
-    path_template = template = cv2.imread(template_path)
+    path_template = template = cv2.imread(file_path)
     if path_template is not None:
         cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, (colour_light_blue), 1,
                     cv2.LINE_AA)

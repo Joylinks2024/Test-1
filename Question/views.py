@@ -48,7 +48,7 @@ def Finish_User(request):
         dt2 = datetime.fromisoformat(finish_time)
         time_difference = dt2 - dt1
         certificate_id = Sertifikate_ID_Serializer(user)
-        path = create_certificate(certificate_id=certificate_id)
+        path = create_certificate(certificate_id=certificate_id.data['certificate_id'])
         serializer = Sertifikate_Serializer(user, data={"score": 60, "total_time": str(time_difference)})
         if serializer.is_valid():
             serializer.save()

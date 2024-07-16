@@ -16,6 +16,6 @@ from .views import Create_User, Finish_User
 # register_converter(TelegramIDConverter, 'id')
 
 urlpatterns = [
-    path('create/', Create_User),
-    path('finish/', Finish_User),
+    path('create', Create_User),
+    path('finish', Finish_User),
 ]

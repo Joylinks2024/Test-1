@@ -15,6 +15,12 @@ class Sertifikate_Serializer(ModelSerializer):
         fields = ['score', 'total_time']
 
 
+class Sertifikate_ID_Serializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['certificate_id']
+
+
 class Time_Edit_Serializer(ModelSerializer):
     class Meta:
         model = User

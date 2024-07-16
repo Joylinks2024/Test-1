@@ -57,7 +57,7 @@ def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tam
 
         # Tasvirni saqlash
         cv2.imwrite(save_file_path, template)
-        return f"media/certificates/certificate_{certificate_id}.jpg"
+        return save_file_path#f"media/certificates/certificate_{certificate_id}.jpg"
     else:
         # print(f"Tasvirni yuklashda xatolik yuz berdi: {file_path}")
         return None

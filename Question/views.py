@@ -1,4 +1,6 @@
+import os
 from datetime import datetime
+from pathlib import Path
 
 import cv2
 from django.shortcuts import get_object_or_404
@@ -6,7 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from Users.settings import BASE_DIR
+# from Users.settings import BASE_DIR
 from .models import User
 # from .models import Certificate
 from .serializers import User_Serializer, Sertifikate_Serializer, Time_Edit_Serializer, Sertifikate_ID_Serializer
@@ -24,16 +26,41 @@ def Create_User(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tamurodov"):
+#     import os
+#     file_path = os.path.join(BASE_DIR, 'media/template_certificate/Sertificat_2.png')
+#     save_path = f"{BASE_DIR}\\media\\certificates"
+#     path_template = template = cv2.imread(file_path)
+#     if path_template is not None:
+#         cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, (colour_light_blue), 1,
+#                     cv2.LINE_AA)
+#         cv2.imwrite(f"{save_path}\\certificate_{certificate_id}.jpg", template)
+#         return f"media/certificates/certificate_{certificate_id}.jpg"
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
 def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tamurodov"):
-    import os
-    file_path = os.path.join(BASE_DIR, 'media/template_certificate/Sertificat_2.png')
-    save_path = f"{BASE_DIR}\\media\\certificates"
-    path_template = template = cv2.imread(file_path)
-    if path_template is not None:
-        cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, (colour_light_blue), 1,
+    # Fayl yo'llarini aniqlash
+    file_path = os.path.join(BASE_DIR, 'media', 'template_certificate', 'Sertificat_2.png')
+    save_path = os.path.join(BASE_DIR, 'media', 'certificates')
+
+    # Tasvirni o'qish
+    template = cv2.imread(file_path)
+    if template is not None:
+        cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, colour_light_blue, 1,
                     cv2.LINE_AA)
-        cv2.imwrite(f"{save_path}\\certificate_{certificate_id}.jpg", template)
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        save_file_path = os.path.join(save_path, f"certificate_{certificate_id}.jpg")
+
+        # Tasvirni saqlash
+        cv2.imwrite(save_file_path, template)
         return f"media/certificates/certificate_{certificate_id}.jpg"
+    else:
+        # print(f"Tasvirni yuklashda xatolik yuz berdi: {file_path}")
+        return None
 
 
 @api_view(['POST'])

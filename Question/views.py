@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from .models import User
 # from .models import Certificate
-from .serializers import User_Serializer, Sertifikate_Serializer
+from .serializers import User_Serializer, Sertifikate_Serializer, Time_Edit_Serializer
 
 
 @api_view(['POST'])
@@ -37,4 +37,18 @@ def Finish_User(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+def Restart_User(request):
+    if request.method == 'PUT':
+        try:
+            user = get_object_or_404(User, user_id=request.data['user_id'])
+        except Exception as e:
+            return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        serializer = Time_Edit_Serializer(user, data={"started_time": None, "finished_time": None})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

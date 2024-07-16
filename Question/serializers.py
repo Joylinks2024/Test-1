@@ -14,6 +14,12 @@ class Sertifikate_Serializer(ModelSerializer):
         model = User
         fields = ['score', 'total_time']
 
+
+class Time_Edit_Serializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['started_time', 'finished_time']
+
 # class Sertificate_Serializer(ModelSerializer):
 #     class Meta:
 #         model = Certificate

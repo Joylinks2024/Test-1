@@ -3,10 +3,6 @@ import uuid
 from django.db import models
 
 
-# class Certificate(models.Model):
-#     certificate_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
-
 class User(models.Model):
     user_id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=120)
@@ -18,6 +14,8 @@ class User(models.Model):
     total_time = models.CharField(max_length=10, blank=True, null=True)
     certificate_id = models.UUIDField(default=uuid.uuid4, editable=False)
     created_time = models.DateTimeField(auto_now_add=True)
+    started_time = models.DateTimeField(null=True, blank=True)
+    finished_time = models.DateTimeField(null=True, blank=True)
     objects = models.Manager()
 
     class Meta:

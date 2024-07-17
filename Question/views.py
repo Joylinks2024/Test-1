@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -11,8 +10,7 @@ from rest_framework.response import Response
 # from Users.settings import BASE_DIR
 from .models import User
 # from .models import Certificate
-from .serializers import User_Serializer, Sertifikate_Serializer, Time_Edit_Serializer, Sertifikate_ID_Serializer, \
-    Time_Edit_Finish_Serializer
+from .serializers import User_Serializer, Sertifikate_Serializer, Sertifikate_ID_Serializer
 
 colour_light_blue = 255, 255, 0
 
@@ -64,6 +62,30 @@ def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tam
         return None
 
 
+def score_calculation(test: dict):
+    count_true = int()
+    count_false = int()
+    correct_answers = {
+        "1": "C",
+        "2": "A",
+        "3": "D",
+        "4": "C",
+        "5": "A",
+        "6": "C",
+        "7": "C",
+        "8": "A",
+        "9": "C",
+        "10": "B"
+    }
+    for key, value in test.items():
+        true_answer = correct_answers.get(key)
+        if true_answer == value:
+            count_true += 1
+        else:
+            count_false += 1
+    return count_true, count_false
+
+
 @api_view(['POST'])
 def Finish_User(request):
     if request.method == 'POST':
@@ -71,38 +93,41 @@ def Finish_User(request):
             user = get_object_or_404(User, user_id=request.data['user_id'])
         except Exception as e:
             return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        start_time = request.data["start_time"]
-        finish_time = request.data["finish_time"]
-        dt1 = datetime.fromisoformat(start_time)
-        dt2 = datetime.fromisoformat(finish_time)
-        time_difference = dt2 - dt1
+        count_true, count_false = score_calculation(test=request.data['test'])
+        if count_true < 6:
+            return Response(
+                data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": None},
+                status=status.HTTP_200_OK)
         certificate_id = Sertifikate_ID_Serializer(user)
         path = create_certificate(certificate_id=certificate_id.data['certificate_id'])
-        serializer = Sertifikate_Serializer(user, data={"score": 60, "total_time": str(time_difference)})
+        serializer = Sertifikate_Serializer(user,
+                                            data={"correct_answer": count_true, "wrong_answer": count_false,
+                                                  "score": count_true * 10})
         if serializer.is_valid():
             serializer.save()
-            return Response({"score": 60, "total_time": str(time_difference), "photo": path}, status=status.HTTP_200_OK)
+            return Response(
+                {"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": path},
+                status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['PUT'])
-def Restart_User(request):
-    if request.method == 'PUT':
-        try:
-            user = get_object_or_404(User, user_id=request.data['user_id'])
-        except Exception as e:
-            return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            if request.data['started_time'] in [None, "none", "None"] and request.data['finished_time'] not in [None,
-                                                                                                                "none",
-                                                                                                                "None"]:
-                serializer = Time_Edit_Finish_Serializer(user, data={"finished_time": request.data['finished_time']})
-            else:
-                serializer = Time_Edit_Serializer(user, data={"started_time": request.data['started_time'],
-                                                              "finished_time": request.data['finished_time']})
-        except Exception as e:
-            return Response(data={'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['PUT'])
+# def Restart_User(request):
+#     if request.method == 'PUT':
+#         try:
+#             user = get_object_or_404(User, user_id=request.data['user_id'])
+#         except Exception as e:
+#             return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+#         try:
+#             if request.data['started_time'] in [None, "none", "None"] and request.data['finished_time'] not in [None,
+#                                                                                                                 "none",
+#                                                                                                                 "None"]:
+#                 serializer = Time_Edit_Finish_Serializer(user, data={"finished_time": request.data['finished_time']})
+#             else:
+#                 serializer = Time_Edit_Serializer(user, data={"started_time": request.data['started_time'],
+#                                                               "finished_time": request.data['finished_time']})
+#         except Exception as e:
+#             return Response(data={'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

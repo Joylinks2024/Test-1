@@ -8,7 +8,7 @@ from .models import User
 
 @admin.register(User)
 class register_user(admin.ModelAdmin):
-    list_display = ['full_name', 'email', 'score', 'total_time']
+    list_display = ['full_name', 'email', 'score']
     ordering = ['-created_time']
     search_fields = ['first_name']
-    list_filter = ['score', 'total_time', 'created_time']
+    list_filter = ['score', 'created_time']

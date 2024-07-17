@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import Create_User, Finish_User, Restart_User
+from .views import Create_User, Finish_User
 
 # class TelegramIDConverter:
 #     regex = '[0-9]+'
@@ -17,5 +17,4 @@ from .views import Create_User, Finish_User, Restart_User
 urlpatterns = [
     path('create', Create_User),
     path('finish', Finish_User),
-    path('restart', Restart_User),
 ]

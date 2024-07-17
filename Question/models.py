@@ -10,12 +10,11 @@ class User(models.Model):
     passport_serial_number = models.CharField(max_length=9, unique=True)
     phone_number = models.CharField(max_length=13)
     email = models.EmailField()
+    correct_answer = models.IntegerField(blank=True, null=True)
+    wrong_answer = models.IntegerField(blank=True, null=True)
     score = models.IntegerField(blank=True, null=True)
-    total_time = models.CharField(max_length=10, blank=True, null=True)
     certificate_id = models.UUIDField(default=uuid.uuid4, editable=False)
     created_time = models.DateTimeField(auto_now_add=True)
-    started_time = models.DateTimeField(null=True, blank=True)
-    finished_time = models.DateTimeField(null=True, blank=True)
     objects = models.Manager()
 
     class Meta:

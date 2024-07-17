@@ -12,7 +12,7 @@ class User_Serializer(ModelSerializer):
 class Sertifikate_Serializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['score', 'total_time']
+        fields = ['correct_answer', 'wrong_answer', 'score']
 
 
 class Sertifikate_ID_Serializer(ModelSerializer):

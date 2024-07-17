@@ -83,7 +83,7 @@ def Finish_User(request):
         count_true, count_false = score_calculation(test=request.data['test'])
         if count_true < 6:
             return Response(
-                data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": None,
+                data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10,
                       "status": False},
                 status=status.HTTP_200_OK)
         certificate_id = Sertifikate_ID_Serializer(user)

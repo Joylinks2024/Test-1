@@ -18,7 +18,7 @@ class Sertifikate_Serializer(ModelSerializer):
 class Sertifikate_ID_Serializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['certificate_id']
+        fields = ['first_name', 'last_name', 'certificate_id']
 
 
 class Time_Edit_Serializer(ModelSerializer):

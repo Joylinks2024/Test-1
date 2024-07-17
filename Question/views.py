@@ -89,7 +89,7 @@ def Finish_User(request):
                                             data={"correct_answer": count_true, "wrong_answer": count_false,
                                                   "score": count_true * 10})
         path = create_certificate(certificate_id=certificate_id.data['certificate_id'],
-                                  user_fullname=f"{serializer.data['last_name']} {serializer.data['first_name']}")
+                                  user_fullname=f"{certificate_id.data['last_name']} {certificate_id.data['first_name']}")
         if serializer.is_valid():
             serializer.save()
             return Response(

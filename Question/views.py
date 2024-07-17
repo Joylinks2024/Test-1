@@ -7,9 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-# from Users.settings import BASE_DIR
 from .models import User
-# from .models import Certificate
 from .serializers import User_Serializer, Sertifikate_Serializer, Sertifikate_ID_Serializer
 
 colour_light_blue = 255, 255, 0
@@ -100,24 +98,3 @@ def Finish_User(request):
                 status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# @api_view(['PUT'])
-# def Restart_User(request):
-#     if request.method == 'PUT':
-#         try:
-#             user = get_object_or_404(User, user_id=request.data['user_id'])
-#         except Exception as e:
-#             return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-#         try:
-#             if request.data['started_time'] in [None, "none", "None"] and request.data['finished_time'] not in [None,
-#                                                                                                                 "none",
-#                                                                                                                 "None"]:
-#                 serializer = Time_Edit_Finish_Serializer(user, data={"finished_time": request.data['finished_time']})
-#             else:
-#                 serializer = Time_Edit_Serializer(user, data={"started_time": request.data['started_time'],
-#                                                               "finished_time": request.data['finished_time']})
-#         except Exception as e:
-#             return Response(data={'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

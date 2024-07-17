@@ -25,18 +25,6 @@ def Create_User(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tamurodov"):
-#     import os
-#     file_path = os.path.join(BASE_DIR, 'media/template_certificate/Sertificat_2.png')
-#     save_path = f"{BASE_DIR}\\media\\certificates"
-#     path_template = template = cv2.imread(file_path)
-#     if path_template is not None:
-#         cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, (colour_light_blue), 1,
-#                     cv2.LINE_AA)
-#         cv2.imwrite(f"{save_path}\\certificate_{certificate_id}.jpg", template)
-#         return f"media/certificates/certificate_{certificate_id}.jpg"
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -58,7 +46,6 @@ def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tam
         cv2.imwrite(save_file_path, template)
         return f"media/certificates/certificate_{certificate_id}.jpg"
     else:
-        # print(f"Tasvirni yuklashda xatolik yuz berdi: {file_path}")
         return None
 
 
@@ -96,7 +83,8 @@ def Finish_User(request):
         count_true, count_false = score_calculation(test=request.data['test'])
         if count_true < 6:
             return Response(
-                data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": None},
+                data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": None,
+                      "status": False},
                 status=status.HTTP_200_OK)
         certificate_id = Sertifikate_ID_Serializer(user)
         path = create_certificate(certificate_id=certificate_id.data['certificate_id'])
@@ -106,7 +94,8 @@ def Finish_User(request):
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": path},
+                {"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": path,
+                 "status": True},
                 status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

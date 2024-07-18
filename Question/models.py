@@ -13,7 +13,7 @@ class User(models.Model):
     correct_answer = models.IntegerField(blank=True, null=True)
     wrong_answer = models.IntegerField(blank=True, null=True)
     score = models.IntegerField(blank=True, null=True)
-    image = models.ImageField(upload_to='certificates/images', blank=True, null=True)
+    image = models.FileField(upload_to='certificates/images', blank=True, null=True)
     created_time = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
 

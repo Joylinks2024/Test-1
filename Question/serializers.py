@@ -12,13 +12,13 @@ class User_Serializer(ModelSerializer):
 class Sertifikate_Serializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['correct_answer', 'wrong_answer', 'score']
+        fields = ['correct_answer', 'wrong_answer', 'score', 'image']
 
 
 class Sertifikate_ID_Serializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'certificate_id']
+        fields = ['user_id', 'first_name', 'last_name']
 
 
 class Time_Edit_Serializer(ModelSerializer):

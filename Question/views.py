@@ -47,11 +47,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #     else:
 #         return None
 def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tamurodov"):
-    # Fayl yo'llarini aniqlash
     file_path = os.path.join(BASE_DIR, 'media', 'template_certificate', 'Sertificat_2.png')
     save_path = os.path.join(BASE_DIR, 'media', 'certificates', 'images')
 
-    # Tasvirni o'qish
     template = cv2.imread(file_path)
     if template is not None:
         cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, colour_light_blue, 1, cv2.LINE_AA)
@@ -59,9 +57,8 @@ def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tam
             os.makedirs(save_path)
         save_file_path = os.path.join(save_path, f"certificate_{certificate_id}.jpg")
 
-        # Tasvirni saqlash
         cv2.imwrite(save_file_path, template)
-        return f"media/certificates/images/certificate_{certificate_id}.jpg", f"certificates/images/certificate_{certificate_id}.jpg"
+        return save_file_path, f"certificates/images/certificate_{certificate_id}.jpg"
     else:
         return None, None
 
@@ -139,6 +136,9 @@ def Finish_User(request):
             certificate_id=certificate_id.data['user_id'],
             user_fullname=f"{certificate_id.data['last_name']} {certificate_id.data['first_name']}"
         )
+
+        if not path or not db:
+            return Response(data={"error": "Certificate creation failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         serializer = Sertifikate_Serializer(
             user,

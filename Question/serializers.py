@@ -14,6 +14,14 @@ class Sertifikate_Serializer(ModelSerializer):
         model = User
         fields = ['correct_answer', 'wrong_answer', 'score', 'image']
 
+    def create(self, validated_data):
+        # Fayl yo'lini to'g'ri formatda olish
+        image_path = validated_data.pop('image')
+        sertifikate_instance = User.objects.create(**validated_data)
+        sertifikate_instance.image = image_path
+        sertifikate_instance.save()
+        return sertifikate_instance
+
 
 class Sertifikate_Info_Serializer(ModelSerializer):
     class Meta:

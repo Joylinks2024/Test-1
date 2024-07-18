@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import User
-from .serializers import User_Serializer, Sertifikate_Serializer, Sertifikate_ID_Serializer
+from .serializers import User_Serializer, Sertifikate_Serializer, Sertifikate_Info_Serializer
 
 colour_light_blue = 255, 255, 0
 
@@ -84,13 +84,12 @@ def Finish_User(request):
                 data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10,
                       "status": False},
                 status=status.HTTP_200_OK)
-        certificate_id = Sertifikate_ID_Serializer(user)
+        certificate_id = Sertifikate_Info_Serializer(user)
         path, db = create_certificate(certificate_id=certificate_id.data['user_id'],
                                       user_fullname=f"{certificate_id.data['last_name']} {certificate_id.data['first_name']}")
         serializer = Sertifikate_Serializer(user,
                                             data={"correct_answer": count_true, "wrong_answer": count_false,
-                                                  "score": count_true * 10,
-                                                  "image": db})
+                                                  "score": count_true * 10, "image": db})
         if serializer.is_valid():
             serializer.save()
             return Response(

@@ -15,7 +15,7 @@ class Sertifikate_Serializer(ModelSerializer):
         fields = ['correct_answer', 'wrong_answer', 'score', 'image']
 
 
-class Sertifikate_ID_Serializer(ModelSerializer):
+class Sertifikate_Info_Serializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['user_id', 'first_name', 'last_name']

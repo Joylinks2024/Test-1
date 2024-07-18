@@ -26,6 +26,26 @@ def Create_User(request):
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tamurodov"):
+#     # Fayl yo'llarini aniqlash
+#     file_path = os.path.join(BASE_DIR, 'media', 'template_certificate', 'Sertificat_2.png')
+#     save_path = os.path.join(BASE_DIR, 'media', 'certificates', 'images')
+#
+#     # Tasvirni o'qish
+#     template = cv2.imread(file_path)
+#     if template is not None:
+#         cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, colour_light_blue, 1,
+#                     cv2.LINE_AA)
+#         if not os.path.exists(save_path):
+#             os.makedirs(save_path)
+#         save_file_path = os.path.join(save_path, f"certificate_{certificate_id}.jpg")
+#
+#         # Tasvirni saqlash
+#         cv2.imwrite(save_file_path, template)
+#         return f"media/certificates/images/certificate_{certificate_id}.jpg", \
+#                f"certificates/images/certificate_{certificate_id}.jpg"
+#     else:
+#         return None
 def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tamurodov"):
     # Fayl yo'llarini aniqlash
     file_path = os.path.join(BASE_DIR, 'media', 'template_certificate', 'Sertificat_2.png')
@@ -34,17 +54,16 @@ def create_certificate(certificate_id: [int, str], user_fullname="Diyorbek O'tam
     # Tasvirni o'qish
     template = cv2.imread(file_path)
     if template is not None:
-        cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, colour_light_blue, 1,
-                    cv2.LINE_AA)
+        cv2.putText(template, user_fullname, (245, 575), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1.7, colour_light_blue, 1, cv2.LINE_AA)
         if not os.path.exists(save_path):
             os.makedirs(save_path)
         save_file_path = os.path.join(save_path, f"certificate_{certificate_id}.jpg")
 
         # Tasvirni saqlash
         cv2.imwrite(save_file_path, template)
-        return f"media/certificates/certificate_{certificate_id}.jpg", f"certificates/certificate_{certificate_id}.jpg"
+        return f"media/certificates/images/certificate_{certificate_id}.jpg", f"certificates/images/certificate_{certificate_id}.jpg"
     else:
-        return None
+        return None, None
 
 
 def score_calculation(test: dict):
@@ -71,6 +90,33 @@ def score_calculation(test: dict):
     return count_true, count_false
 
 
+# @api_view(['POST'])
+# def Finish_User(request):
+#     if request.method == 'POST':
+#         try:
+#             user = get_object_or_404(User, user_id=request.data['user_id'])
+#         except Exception as e:
+#             return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+#         count_true, count_false = score_calculation(test=request.data['test'])
+#         if count_true < 6:
+#             return Response(
+#                 data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10,
+#                       "status": False},
+#                 status=status.HTTP_200_OK)
+#         certificate_id = Sertifikate_Info_Serializer(user)
+#         path, db = create_certificate(certificate_id=certificate_id.data['user_id'],
+#                                       user_fullname=f"{certificate_id.data['last_name']} {certificate_id.data['first_name']}")
+#         serializer = Sertifikate_Serializer(user,
+#                                             data={"correct_answer": count_true, "wrong_answer": count_false,
+#                                                   "score": count_true * 10, "image": db})
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(
+#                 {"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": path,
+#                  "status": True},
+#                 status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def Finish_User(request):
     if request.method == 'POST':
@@ -78,22 +124,33 @@ def Finish_User(request):
             user = get_object_or_404(User, user_id=request.data['user_id'])
         except Exception as e:
             return Response(data={"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
         count_true, count_false = score_calculation(test=request.data['test'])
+
         if count_true < 6:
             return Response(
                 data={"true_answer": count_true, "false_answer": count_false, "score": count_true * 10,
                       "status": False},
-                status=status.HTTP_200_OK)
+                status=status.HTTP_200_OK
+            )
+
         certificate_id = Sertifikate_Info_Serializer(user)
-        path, db = create_certificate(certificate_id=certificate_id.data['user_id'],
-                                      user_fullname=f"{certificate_id.data['last_name']} {certificate_id.data['first_name']}")
-        serializer = Sertifikate_Serializer(user,
-                                            data={"correct_answer": count_true, "wrong_answer": count_false,
-                                                  "score": count_true * 10, "image": db})
+        path, db = create_certificate(
+            certificate_id=certificate_id.data['user_id'],
+            user_fullname=f"{certificate_id.data['last_name']} {certificate_id.data['first_name']}"
+        )
+
+        serializer = Sertifikate_Serializer(
+            user,
+            data={"correct_answer": count_true, "wrong_answer": count_false, "score": count_true * 10, "image": db}
+        )
+
         if serializer.is_valid():
             serializer.save()
             return Response(
                 {"true_answer": count_true, "false_answer": count_false, "score": count_true * 10, "photo": path,
                  "status": True},
-                status=status.HTTP_200_OK)
+                status=status.HTTP_200_OK
+            )
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
